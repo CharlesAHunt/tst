@@ -100,7 +100,7 @@ lazy val service = project
     scalaVersion := scala2,
     dockerBaseImage := "azul/zulu-openjdk-alpine:17-latest",
     testFrameworks += new TestFramework("weaver.framework.CatsEffect"),
-    Compile / mainClass := Some("com.tst.service.HttpServer"),
+    Compile / mainClass := Some("com.tst.service.Main"),
     dockerExposedPorts ++= Seq(8080),
     Universal / javaOptions ++= Seq(
       "-J-Xms2g",
