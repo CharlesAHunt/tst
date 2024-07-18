@@ -16,19 +16,10 @@ val commonSettings = Seq(
       .id + scala.Console.YELLOW + "]" + scala.Console.RED + " $ " + scala.Console.RESET
   },
   Compile / wartremoverErrors ++= Warts.allBut(
-//    Wart.Nothing,
-//    Wart.DefaultArguments,
-//    Wart.Any,
-//    Wart.ImplicitParameter,
-//    Wart.StringPlusAny,
-//    Wart.NonUnitStatements,
-//    Wart.PublicInference,
-//    Wart.Overloading,
-//    Wart.ToString,
-//    Wart.Equals,
-//    Wart.JavaSerializable,
-//    Wart.Serializable,
-//    Wart.Product
+    Wart.Nothing,
+    Wart.Any,
+    Wart.ImplicitParameter,
+    Wart.IterableOps
   ),
   scalacOptions ++= Seq(
     "-Xsource:3", // Enables some Scala 3 syntax and behavior

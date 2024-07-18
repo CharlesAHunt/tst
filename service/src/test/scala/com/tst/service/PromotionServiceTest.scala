@@ -6,7 +6,7 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 import weaver.IOSuite
 
-object BestPriceService extends IOSuite with AnyWordSpecLike with Matchers with BeforeAndAfterAll {
+object PromotionServiceTest extends IOSuite with AnyWordSpecLike with Matchers with BeforeAndAfterAll {
 
   test("Test best price for cabin and rate group") { resources =>
     IO.pure(expect(1 == 1))

@@ -1,28 +1,38 @@
 package com.tst.service
 
-import cats.data.EitherT
-import cats.data.EitherT.right
 import cats.effect.{ExitCode, IO, IOApp}
-import com.tst.service.models.RatesAndPrices.{BestGroupPrice, CabinPrice, Rate}
+import com.tst.service.models.Promotion
+import com.tst.service.models.RatesAndPrices.{CabinPrice, Rate}
+import com.tst.service.services.{PriceService, PromotionService}
 
 object Main extends IOApp { server =>
 
-  //  private implicit val config: Config = Config.loadConfig
+  override def run(args: List[String]): IO[ExitCode] = (for {
+    _ <- PriceService.getBestGroupPrices(rateGroups, cabinPrices).map(println)
+    _ <- PromotionService.allCombinablePromotions(promotions).map(println)
+    _ <- PromotionService.combinablePromotions(P1, promotions).map(println)
+    _ <- PromotionService.combinablePromotions(P3, promotions).map(println)
+  } yield ()).value.as(ExitCode.Success)
 
-  override def run(args: List[String]): IO[ExitCode] =
-    IO.println("Hello World").as(ExitCode.Success)
+  private val rateGroups = Seq(Rate(M1, Military), Rate(M2, Military), Rate(S1, Senior), Rate(S2, Senior))
 
-  def getBestGroupPrices(rates: Seq[Rate], prices: Seq[CabinPrice]): EitherT[IO, Exception, Seq[BestGroupPrice]] =
-    right(IO.delay {
-      prices
-        .groupBy(_.rateCode)
-        .flatMap { byRate =>
-          byRate._2
-            .groupBy(_.cabinCode)
-            .map(_._2.minBy(_.price))
-            .map(best => BestGroupPrice(best.cabinCode, best.rateCode, best.price, byRate._1))
-        }
-        .toSeq
-    })
+  private val cabinPrices = Seq(
+    CabinPrice(CA, M1, 200.00),
+    CabinPrice(CA, M2, 250.00),
+    CabinPrice(CA, S1, 225.00),
+    CabinPrice(CA, S2, 260.00),
+    CabinPrice(CB, M1, 230.00),
+    CabinPrice(CB, M2, 260.00),
+    CabinPrice(CB, S1, 245.00),
+    CabinPrice(CB, S2, 270.00)
+  )
+
+  private val promotions = Seq(
+    Promotion(P1, Seq(P3)),
+    Promotion(P2, Seq(P4, P5)),
+    Promotion(P3, Seq(P1)),
+    Promotion(P4, Seq(P2)),
+    Promotion(P5, Seq(P2))
+  )
 
 }
