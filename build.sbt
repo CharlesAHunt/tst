@@ -1,5 +1,4 @@
 import sbt.Keys.organization
-import com.typesafe.sbt.packager.docker.*
 
 lazy val scala2 = "2.13.14"
 
@@ -68,35 +67,14 @@ val commonSettings = Seq(
   )
 )
 
-lazy val root = project
-  .in(file("."))
-  .aggregate(service, config)
-  .settings(
-    commonSettings,
-    name := "TST Services",
-    description := "TST Services"
-  )
-
-lazy val config = project
-  .in(file("config"))
-  .settings(
-    name := "Config",
-    description := "Application Configs",
-    scalaVersion := scala2,
-    libraryDependencies ++= Dependencies.dependencies,
-    commonSettings
-  )
-
 lazy val service = project
   .in(file("service"))
   .settings(
     name := "TST Service",
     description := "TST Service",
     scalaVersion := scala2,
-    dockerBaseImage := "azul/zulu-openjdk-alpine:17-latest",
     testFrameworks += new TestFramework("weaver.framework.CatsEffect"),
     Compile / mainClass := Some("com.tst.service.Main"),
-    dockerExposedPorts ++= Seq(8080),
     Universal / javaOptions ++= Seq(
       "-J-Xms2g",
       "-J-Xmx3g"
@@ -109,9 +87,6 @@ lazy val service = project
     Global / onChangedBuildSource := ReloadOnSourceChanges,
     commonSettings
   )
-  .enablePlugins(JavaServerAppPackaging)
-  .enablePlugins(DockerPlugin)
-  .enablePlugins(AshScriptPlugin)
   .enablePlugins(RevolverPlugin)
 
 Revolver.enableDebugging(port = 5050, suspend = false)
