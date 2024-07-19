@@ -11,11 +11,13 @@ import scala.Console.CYAN
 object Main extends IOApp { server =>
 
   override def run(args: List[String]): IO[ExitCode] = (for {
-    _ <- PriceService.getBestGroupPrices(rateGroups, cabinPrices).map(r => println(s"$CYAN $r"))
-    _ <- PromotionService.allCombinablePromotions(promotions).map(r => println(s"$CYAN $r"))
-    _ <- PromotionService.combinablePromotions(promotions, P1).map(r => println(s"$CYAN $r"))
-    _ <- PromotionService.combinablePromotions(promotions, P3).map(r => println(s"$CYAN $r"))
+    _ <- PriceService.getBestGroupPrices(rateGroups, cabinPrices).map(show)
+    _ <- PromotionService.allCombinablePromotions(promotions).map(show)
+    _ <- PromotionService.combinablePromotions(promotions, P1).map(show)
+    _ <- PromotionService.combinablePromotions(promotions, P3).map(show)
   } yield ()).value.as(ExitCode.Success)
+
+  private def show[T](t: Seq[T]): Unit = println(s"$CYAN $t")
 
 }
 
