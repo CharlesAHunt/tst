@@ -4,7 +4,7 @@ lazy val scala2 = "2.13.14"
 
 val commonSettings = Seq(
   organization := "com.tst",
-  version := "1.63.0",
+  version := "0.1.0",
   semanticdbEnabled := false,
   semanticdbVersion := scalafixSemanticdb.revision,
   scalafmtOnCompile := true,
