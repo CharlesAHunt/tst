@@ -19,7 +19,11 @@ val commonSettings = Seq(
     Wart.Nothing,
     Wart.Any,
     Wart.ImplicitParameter,
-    Wart.IterableOps
+    Wart.IterableOps,
+    Wart.Serializable,
+    Wart.JavaSerializable,
+    Wart.DefaultArguments,
+    Wart.StringPlusAny
   ),
   scalacOptions ++= Seq(
     "-Xsource:3", // Enables some Scala 3 syntax and behavior

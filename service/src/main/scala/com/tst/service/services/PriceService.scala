@@ -1,15 +1,23 @@
 package com.tst.service.services
 
 import cats.data.EitherT
-import cats.data.EitherT.{leftT, rightT}
+import cats.data.EitherT.rightT
 import cats.effect.IO
 import cats.implicits.{catsSyntaxEq, toTraverseOps}
+import com.tst.service.{EitherSeq, notFound}
 import com.tst.service.models.RatesAndPrices.{BestGroupPrice, CabinPrice, Rate}
 import com.tst.service.models.{NotFound, TSTError}
 
 object PriceService {
 
-  def getBestGroupPrices(rates: Seq[Rate], prices: Seq[CabinPrice]): EitherT[IO, TSTError, Seq[BestGroupPrice]] = {
+  /**
+   * Calculates the best group prices for a cabin and rate group
+   *
+   * @param rates all rates and rate groups
+   * @param prices all cabin prices with a specific rate code
+   * @return the lowest cabin price for any rate group and cabin
+   */
+  def getBestGroupPrices(rates: Seq[Rate], prices: Seq[CabinPrice]): EitherSeq[BestGroupPrice] = {
     implicit val implicitRates: Seq[Rate] = rates
     for {
       rateGroupPrices <- prices.toList.traverse(attachRateGroup)
@@ -18,16 +26,10 @@ object PriceService {
     } yield result
   }
 
-  private def attachRateGroup(
-    cabinPrice: CabinPrice
-  )(implicit rates: Seq[Rate]): EitherT[IO, NotFound, BestGroupPrice] =
+  private def attachRateGroup(price: CabinPrice)(implicit rates: Seq[Rate]): EitherT[IO, NotFound, BestGroupPrice] =
     rates
-      .find(_.rateCode === cabinPrice.rateCode)
+      .find(_.rateCode === price.rateCode)
       .map(_.rateGroup)
-      .fold(leftT[IO, BestGroupPrice](NotFound()))(group =>
-        rightT[IO, NotFound](
-          BestGroupPrice(cabinPrice.cabinCode, cabinPrice.rateCode, cabinPrice.price, group)
-        )
-      )
+      .fold(notFound)(group => rightT(BestGroupPrice(price.cabinCode, price.rateCode, price.price, group)))
 
 }

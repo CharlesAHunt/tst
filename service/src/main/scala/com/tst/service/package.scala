@@ -1,6 +1,16 @@
 package com.tst
 
+import cats.data.EitherT
+import cats.data.EitherT.leftT
+import cats.effect.IO
+import com.tst.service.models.RatesAndPrices.BestGroupPrice
+import com.tst.service.models.{NotFound, TSTError}
+
 package object service {
+
+  type EitherSeq[A] = EitherT[IO, TSTError, Seq[A]]
+  val notFound: EitherT[IO, NotFound, BestGroupPrice] = leftT[IO, BestGroupPrice](NotFound())
+
   // Rate Groups
   val Military = "Military"
   val Senior = "Senior"

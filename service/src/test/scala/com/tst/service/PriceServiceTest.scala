@@ -1,20 +1,32 @@
 package com.tst.service
 
-import cats.effect.{IO, Resource}
-import org.scalatest.BeforeAndAfterAll
-import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpecLike
-import weaver.IOSuite
+import com.tst.fixtures.TestOutputData.rateGroups
+import com.tst.service.services.PriceService
 
-object PriceServiceTest extends IOSuite with AnyWordSpecLike with Matchers with BeforeAndAfterAll {
+object PriceServiceTest extends TestResource {
 
-  test("Test best price for cabin and rate group") { resources =>
-    IO.pure(expect(1 == 1))
-
+  test("Test price service returns a right") { _ =>
+    for {
+      e <- PriceService.getBestGroupPrices(InputData.rateGroups, InputData.cabinPrices).value
+    } yield expect(e.isRight)
   }
 
-  type Res = Unit
-  override def sharedResource: Resource[IO, Res] = resources
+  test("Test price service returns a non empty result") { _ =>
+    for {
+      e <- PriceService.getBestGroupPrices(InputData.rateGroups, InputData.cabinPrices).value
+    } yield expect(e.toOption.getOrElse(List.empty).nonEmpty)
+  }
 
-  def resources: Resource[IO, Unit] = Resource.unit
+  test("Test price return empty for empty input") { _ =>
+    for {
+      e <- PriceService.getBestGroupPrices(Seq.empty, Seq.empty).value
+    } yield expect(e.toOption.getOrElse(List.empty).isEmpty)
+  }
+
+  test("Test price service returns all expected results") { _ =>
+    for {
+      e <- PriceService.getBestGroupPrices(InputData.rateGroups, InputData.cabinPrices).value
+    } yield expect(e.toOption.getOrElse(List.empty).forall(rateGroups.contains))
+  }
+
 }
