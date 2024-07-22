@@ -1,10 +1,8 @@
 package com.tst.service.services
 
-import cats.data.EitherT.rightT
-import cats.effect.IO
 import cats.implicits.catsSyntaxEq
-import com.tst.service.EitherSeq
-import com.tst.service.models.{Promotion, PromotionCombo, TSTError}
+import com.tst.service.{EitherSeq, rightTST}
+import com.tst.service.models.Promotions.{Promotion, PromotionCombo}
 
 import scala.annotation.tailrec
 
@@ -17,12 +15,12 @@ object PromotionService {
    * @return all combinations of promotions
    */
   def allCombinablePromotions(allPromos: Seq[Promotion]): EitherSeq[PromotionCombo] =
-    rightT {
-      val possibleCombinations = allPromos.map(promo => possibleCombos(allPromos, promo))
-      (possibleCombinations.map(promo => PromotionCombo(buildCombos(promo.reverse).sorted)) ++ possibleCombinations
-        .map(promo => PromotionCombo(buildCombos(promo).sorted)))
-        .distinctBy(_.promotionCodes)
-    }
+    for {
+      possibleCombos <- rightTST(allPromos.map(promo => possibleCombos(allPromos, promo)))
+      fromRight <- rightTST(possibleCombos.map(promo => PromotionCombo(buildCombos(promo.reverse).sorted)))
+      fromLeft <- rightTST(possibleCombos.map(promo => PromotionCombo(buildCombos(promo).sorted)))
+      result <- rightTST((fromLeft ++ fromRight).distinctBy(_.promotionCodes))
+    } yield result
 
   /**
    * Calculates all combinable promotions with a specific promoCode
@@ -33,7 +31,7 @@ object PromotionService {
    */
   def combinablePromotions(allPromos: Seq[Promotion], promoCode: String): EitherSeq[PromotionCombo] = for {
     all <- allCombinablePromotions(allPromos)
-    result <- rightT[IO, TSTError](all.filter(_.promotionCodes.contains(promoCode)))
+    result <- rightTST(all.filter(_.promotionCodes.contains(promoCode)))
   } yield result
 
   private def possibleCombos(allPromos: Seq[Promotion], promo: Promotion): Seq[Promotion] = allPromos

@@ -1,10 +1,10 @@
 package com.tst.service
 
 import cats.effect.{ExitCode, IO, IOApp}
-import com.tst.service.models.Promotion
 import com.tst.service.models.RatesAndPrices.{CabinPrice, Rate}
 import com.tst.service.services.{PriceService, PromotionService}
 import InputData.*
+import com.tst.service.models.Promotions.Promotion
 
 import scala.Console.CYAN
 
