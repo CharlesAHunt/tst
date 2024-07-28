@@ -31,6 +31,18 @@ object PriceServiceTest extends TestResource {
     } yield expect(e.toOption.getOrElse(List.empty).isEmpty)
   }
 
+  test("Test price return empty for empty input in param 1") { _ =>
+    for {
+      e <- PriceService.getBestGroupPrices(InputData.rateGroups, Seq.empty).value
+    } yield expect(e.toOption.getOrElse(List.empty).isEmpty)
+  }
+
+  test("Test price return empty for empty input in param 2") { _ =>
+    for {
+      e <- PriceService.getBestGroupPrices(Seq.empty, InputData.cabinPrices).value
+    } yield expect(e.toOption.getOrElse(List.empty).isEmpty)
+  }
+
   test("Test price service returns all expected results") { _ =>
     for {
       e <- PriceService.getBestGroupPrices(InputData.rateGroups, InputData.cabinPrices).value

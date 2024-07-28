@@ -1,7 +1,7 @@
 package com.tst.fixtures
 
 import com.tst.service.{CA, CB, M1, Military, P1, P2, P3, P4, P5, S1, Senior}
-import com.tst.service.models.PromotionCombo
+import com.tst.service.models.Promotions.PromotionCombo
 import com.tst.service.models.RatesAndPrices.BestGroupPrice
 
 object TestOutputData {
