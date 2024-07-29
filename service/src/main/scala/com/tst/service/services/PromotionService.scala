@@ -19,7 +19,8 @@ object PromotionService {
       possibleCombos <- rightTST(allPromos.map(promo => possibleCombos(allPromos, promo)))
       fromRight <- rightTST(possibleCombos.map(promo => PromotionCombo(buildCombos(promo.reverse).sorted)))
       fromLeft <- rightTST(possibleCombos.map(promo => PromotionCombo(buildCombos(promo).sorted)))
-      result <- rightTST((fromLeft ++ fromRight).distinctBy(_.promotionCodes))
+      distinct <- rightTST((fromLeft ++ fromRight).distinctBy(_.promotionCodes))
+      result <- rightTST(distinct.filter(_.promotionCodes.lengthIs > 1))
     } yield result
 
   /**

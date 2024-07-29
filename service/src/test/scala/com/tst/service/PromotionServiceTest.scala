@@ -1,6 +1,7 @@
 package com.tst.service
 
-import com.tst.fixtures.TestOutputData.{promoCombos, promoCombosP1, promoCombosP3}
+import com.tst.fixtures.TestInputData
+import com.tst.fixtures.TestOutputData.{promoCombos, promoCombosComplex, promoCombosP1, promoCombosP3}
 import com.tst.service.services.PromotionService
 
 object PromotionServiceTest extends TestResource {
@@ -35,4 +36,11 @@ object PromotionServiceTest extends TestResource {
     } yield expect(e.toOption.getOrElse(List.empty) === List.empty)
   }
 
+  test("Test promotion service should not return combos with only one result") { _ =>
+    for {
+      e <- PromotionService.allCombinablePromotions(TestInputData.promotionsComplex).value
+    } yield {
+      expect(e.toOption.getOrElse(List.empty).forall(promoCombosComplex.contains))
+    }
+  }
 }

@@ -1,7 +1,7 @@
 package com.tst.fixtures
 
 import com.tst.service.{CA, CB, M1, Military, P1, P2, P3, P4, P5, S1, Senior}
-import com.tst.service.models.Promotions.PromotionCombo
+import com.tst.service.models.Promotions.{Promotion, PromotionCombo}
 import com.tst.service.models.RatesAndPrices.BestGroupPrice
 
 object TestOutputData {
@@ -26,5 +26,23 @@ object TestOutputData {
   )
 
   val promoCombosP3: Seq[PromotionCombo] = Seq(PromotionCombo(Seq(P2, P3)), PromotionCombo(Seq(P3, P4, P5)))
+
+  val promoCombosComplex: Seq[PromotionCombo] = Seq(
+    PromotionCombo(Seq(P1, P4, P5)),
+    PromotionCombo(Seq(P2, P3)),
+    PromotionCombo(Seq(P3, P4, P5))
+  )
+
+}
+
+object TestInputData {
+
+  val promotionsComplex: Seq[Promotion] = Seq(
+    Promotion(P1, Seq(P2, P3)),
+    Promotion(P2, Seq(P4, P5)),
+    Promotion(P3, Seq(P1)),
+    Promotion(P4, Seq(P2)),
+    Promotion(P5, Seq(P2))
+  )
 
 }
