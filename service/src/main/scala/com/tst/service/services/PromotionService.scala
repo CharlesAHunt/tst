@@ -9,7 +9,7 @@ import scala.annotation.tailrec
 object PromotionService {
 
   /**
-   * Calculates all possible promotions
+   * Calculates all possible promotion combinations
    *
    * @param allPromos All promotions available
    * @return all combinations of promotions
